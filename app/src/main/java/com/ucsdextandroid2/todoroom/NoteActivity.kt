@@ -1,5 +1,6 @@
 package com.ucsdextandroid2.todoroom
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -48,5 +49,25 @@ class NoteActivity: AppCompatActivity() {
             textView.setText(originalNote?.text)
         }
     }
+
+    private fun saveNote(){
+        if(titleView.text.isNotEmpty() || textView.text.isNotEmpty()){
+            val note = Note(titleView.text.toString(),
+                    textView.text.toString(),
+                    originalNote?.datetime ?: System.currentTimeMillis(),
+                    originalNote?.imageUri)
+            AppDatabase.get(this).noteDao().insertNote(note)
+
+            setResult(Activity.RESULT_OK)
+        } else {
+            setResult(Activity.RESULT_CANCELED)
+        }
+    }
+
+    override fun onBackPressed() {
+        saveNote()
+        super.onBackPressed()
+    }
+
 
 }
